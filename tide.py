@@ -43,6 +43,7 @@ def create_cal(in_dict):
             day = dateparser.parse(date + in_dict[date][i][0])
             event.add('summary', event_type)
             event.add('dtstart', day)
+            event.add('dtend', day)
             cal.add_component(event)
     f = open('tides.ics', 'wb')
     f.write(cal.to_ical())
