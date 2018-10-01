@@ -6,6 +6,7 @@ import dateparser
 from datetime import datetime
 from icalendar import Event, Calendar
 def pull():
+    print("Getting data from web...")
     url = "https://www.tide-forecast.com/locations/Swansea-Wales/tides/latest"
     page = urlopen(url)
     content = page.readlines()
@@ -21,6 +22,7 @@ def read(content):
 
 
 def format_list(in_list):
+    print("Formating data...")
     out_dict = dict()
     for i in range(len(in_list)):
         if any(ext in in_list[i] for ext in list(calendar.day_name)):
@@ -32,31 +34,26 @@ def format_list(in_list):
     return out_dict
 
 def create_cal(in_dict):
+    print("Creating calandar file...")
     cal = Calendar()
     for date in in_dict.keys(): #for each day 
-        print( "Date:", date)
         for i in range(len(in_dict[date])): #for each event on that day
-            print(in_dict[date][i])
             event = Event()
             event_type = in_dict[date][i][1]
             day = dateparser.parse(date + in_dict[date][i][0])
-            print(day)
             event.add('summary', event_type)
             event.add('dtstart', day)
             cal.add_component(event)
     f = open('tides.ics', 'wb')
     f.write(cal.to_ical())
     f.close()
+
 def remove_tags(input_string):
     out_string = re.sub(r'<.*?>', '', input_string)
     return out_string.strip()
 
-def display(times):
-    for lines in times:
-        print(lines)
-
 a = read(pull())
-#display(a)
 b = format_list(a)
 create_cal(b)
+print("Done!")
 
