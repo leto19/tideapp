@@ -33,15 +33,20 @@ def format_list(in_list):
 
 def create_cal(in_dict):
     cal = Calendar()
-    for date in in_dict.keys():
-        print(date)
-        for i in range(len(in_dict[date])):
+    for date in in_dict.keys(): #for each day 
+        print( "Date:", date)
+        for i in range(len(in_dict[date])): #for each event on that day
             print(in_dict[date][i])
-        # event = Event()
-        # day = dateparser.parse(date + in_dict[date][0][0])
-        # event.add('summary', in_dict[date][0][1])
-        # event.add('dtstart', day)
-        # print(event)
+            event = Event()
+            event_type = in_dict[date][i][1]
+            day = dateparser.parse(date + in_dict[date][i][0])
+            print(day)
+            event.add('summary', event_type)
+            event.add('dtstart', day)
+            cal.add_component(event)
+    f = open('tides.ics', 'wb')
+    f.write(cal.to_ical())
+    f.close()
 def remove_tags(input_string):
     out_string = re.sub(r'<.*?>', '', input_string)
     return out_string.strip()
@@ -51,7 +56,7 @@ def display(times):
         print(lines)
 
 a = read(pull())
-display(a)
+#display(a)
 b = format_list(a)
 create_cal(b)
 
